@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: two-containers
+spec:
+  restartPolicy: OnFailure
+
+  initContainers:
+  - name: populate-content
+    image: debian:stable-slim
+    command: ["/bin/sh", "-c"]
+    args:
+      - mkdir -p /pod-data && echo "Hello from the init container" > /pod-data/index.html
+    volumeMounts:
+      - name: shared-data
+        mountPath: /pod-data
+
+  containers:
+  - name: nginx-container
+    image: nginx:stable-alpine
+    ports:
+      - containerPort: 80
+    volumeMounts:
+      - name: shared-data
+        mountPath: /usr/share/nginx/html:ro
+
+  volumes:
+    - name: shared-data
+      emptyDir: {}
