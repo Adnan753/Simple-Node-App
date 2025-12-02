@@ -1,0 +1,40 @@
+sudo apt update -y
+sudo apt install -y apt-transport-https ca-certificates curl gnupg lsb-release
+
+curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt update -y
+
+sudo apt install -y kubeadm kubelet kubectl
+sudo apt-mark hold kubeadm kubelet kubectl
+
+
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.3/manifests/calico.yaml
+
+
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.3/manifests/calico.yaml
+
+kubectl get pods -A
+
+
+docker build -t nodeapp .
+docker run -p 3000:3000 nodeapp
+
+
+nano multi-container.yml
+
+
+kubectl apply -f multi-container.yml
+
+kubectl get pods -w
+
+
+kubectl port-forward pod/two-containers 8080:80
+
+http://<EC2-PUBLIC-IP>:8080
